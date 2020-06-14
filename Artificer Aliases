@@ -1,0 +1,28 @@
+Flash of Genius
+
+%!! flashg
+
+!alias flashg embed 
+{{cc,a,i="Flash of Genius",int(&ARGS&[1]) if len(&ARGS&)>1 and &ARGS&[1].isdigit() else int("0"),intelligenceMod}}
+{{v=cc_exists(cc) and get_cc(cc)>0}} 
+{{mod_cc(cc,-1,True) if v else err(f'You are out of {cc}.')}}
+-title "<name> {{"uses" if v else "tries to use"}} their {{cc}}{{f" on {&ARGS&[0]}" if &ARGS& else ""}}!"
+-desc "<name> can use their reaction to do stuff."
+-f "{{cc}} (-1)|{{cc_str(cc)}}|inline" 
+{{f'-f "New Value|{a}+{i} = {a+i}|inline"' if a else f'-f "Intelligence Modifier|{i}|inline"'}}
+-footer "!flashg [target] [result] | Made by Matthew" -color <color> -thumb <image>
+
+Spell Storing Item
+
+%!! ssi
+
+!alias ssi {{args,a=argparse(&ARGS&),&ARGS&}}{{store,cast=a[0] if len(a)>1 else '',a[1] if len(a)>1 else ''}}{{cc,H,A,i,help='Spell Storing Item',f'!ssi [store <spell>] [args] [?]',"store" if "store" in store else '','-i' in a,"help" in a or "?" in a}}{{'embed' if A=='store' or help else 'cast'}} 
+{{'' if get('spellStored') or A=='store' else err(f'No spell stored!\n`{H}`')}}
+{{S,v=cast if "&*&" and A else get('spellStored').lower(),cc_exists(cc) and get_cc(cc)}}
+{{S=[x for x in load_json(get_gvar('5a2117dd-6c36-4f27-a258-24f42149b05c')) if S in x.lower()] if S else []}}
+{{S=S[0] if S else ''}}
+{{set_cvar('spellStored', S) if A and S else ''}}
+{{'' if i or help or (A and v) else mod_cc(cc,-1) if v else err('Out of uses!')}}
+{{'' if int(get('ArtificerLevel',0))>10 else err(f'You do not have {cc}\n`!level artificer 11`')}}
+{{f'-title "Store you Spells!" -desc "How to use `!ssi`:\n`{H}`\n" -f "Stored Spell|{get("spellStored").lower()}" -footer "Made by RiptideMatt." -color <color> -thumb <image>' if help else f'-title "{name} stores a spell in their Spell Storing Item!" -desc "Whenever you finish a long rest, you can store a spell." -f "Stored Spell|{get("spellStored").lower()}" -color <color> -thumb <image> -footer "{H}. Made by RiptideMatt."' if A else f'"{S}" -i -f "Spell Storing item|While holding the object, a creature can cast a spell." &*&'}}
+{{"" if help else f'-f "{cc}|{"Ignored" if i else cc_str(cc) if cc_exists(cc) else "*None*"}"'}}
