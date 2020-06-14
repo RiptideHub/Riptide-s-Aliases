@@ -14,6 +14,18 @@
 {{"" if h else f'-f "Effect|{ta.get_effect("Absorbing Element") if ta else c.me.get_effect("Absorbing Element") if c.me else "None"}|inline"' if c and t else ''}}
 -footer "EE 150 | {{H}} | @""RiptideMatt" -color <color> {{'' if ta else f'-thumb {image}'}}
 
+%!! hex
+
+!alias hex cast "hex" {{"&*&"}}
+{{a,l,c=argparse(&ARGS&),["strength","dexterity","constitution","intelligence","wisdom","charisma"],combat()}}
+{{s,t=[x for x in l if a.last('score').lower() in x] if a.get('score') else [get('storedAbilityScore','')],a.last("t")}}
+{{s=s[0] if s else err('No ability')}}
+{{set_cvar('storedAbilityScore',s)}}
+{{s=s if s else err('No s')}}
+{{t=c.get_combatant(t) if c and t else ""}}
+{{t.add_effect(f'Disadvantage on {s} checks', '-dur 600') if t else ''}}
+-f "Effect|Disadvantage on {{s}} checks."
+
 %!! shield
 
 !alias shield {{c,d,a=combat(),int(&ARGS&[0]) if &ARGS& and &ARGS&[0].isdigit() else int('0'),argparse(&ARGS&)}}{{t=a.last('t')}}{{f'i rc "{t}"' if t and c else f'i rc "{name}"' if c and c.me else 'cast'}} "Shield" 
