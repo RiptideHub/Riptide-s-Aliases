@@ -1,0 +1,13 @@
+%!! dshield
+
+!alias dshield embed 
+{{a,c,E=argparse(&ARGS&),combat(),"Shield Status"}}
+{{A,R,N,P,t="don" in a,"doff" in a,"reset" in a,int(&ARGS&[1] if len(&ARGS&)>1 and &ARGS&[1].isdigit() else 0),a.last("t")}}
+{{t=c.get_combatant(t) if t and c else ''}} 
+{{(t.add_effect(E,f'-ac +{2+P}') if A else t.add_effect(E,f'-ac -{2+P}') if R else t.remove_effect(E) if N else '') if t and c else ''}}
+{{(c.me.add_effect(E,f'-ac +{2+P}') if A else c.me.add_effect(E,f'-ac -{2+P}') if R else c.me.remove_effect(E) if N else '') if c and c.me and not t else ''}} 
+-title "{{t.name if t else name}}{{" doffs their" if R else " dons their" if A else " resets their" if N else "'s"}}{{f" +{P} magical" if P else ''}} shield!" 
+-desc "A shield is made from wood or metal and is carried in one hand. Wielding a shield increases your Armor Class by 2. You can benefit from only one shield at a time."
+{{f'-f "Effect|{t.get_effect(E) if t and c else c.me.get_effect(E) if c and c.me else "None"}|inline"' if A or R else ''}}
+-f "{{t.name if t else name}}|{{(armor+2+P if A else armor-2-P if R else armor) if c and c.me and not t else (t.ac+2+P if A else t.ac-2-P if R else t.ac) if t and c else "Not in initiative."}}|inline"
+-footer "Made by RiptideMatt | !dshield [don|doff|reset] [-t combatant if NPC] [1|2|3 if magical]" -color <color> -thumb <image>
