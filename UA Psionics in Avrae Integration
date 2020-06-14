@@ -1,0 +1,78 @@
+%!! psik
+
+!alias psik tembed {{args = &ARGS&}}
+{{get_gvar("5c1b835f-0605-4c3d-a942-fe62f54eb8c6").replace('@',str(args))}}
+
+%!! psip
+
+!alias psip tembed {{args = &ARGS&}}
+{{get_gvar("098e8cfe-da66-4059-8224-3d02b6a24856").replace('@',str(args))}}
+
+%!! psi
+
+!alias psi embed 
+{{a,H,cc=argparse(&ARGS&), f'!psi [?]',"Psi Die"}}
+{{v,G,help=cc_exists(cc) and get_cc(cc)>0,get_cc(cc),"help" in a or "?" in a}}
+{{'' if v else err(f'You are out of {cc}!')}}
+{{u,w,x,y,z=G==1,G==2,G==3 and level>4,G==4 and level>9,G==5 and level>16}}
+{{C="1d12" if z else "1d10" if y else "1d8" if x else "1d6" if w else "1d4" if u else ''}}
+{{M=vroll(C)}}
+-title "<name> {{"uses" if v or help else "tries to use"}} a Psionic Ability!"
+{{'-desc "Psionic abilities with Psi Die!\nThis is basically an alias to show how to setup a psionic ability with the Psi Die from a recent UA. This can function normally for rolling the die and all that as long as you setup a `Psi Die` cc that correlates to the die you currently have, for example:\n`!cc create \\"Psi Die\\" -min 0 -max 2 -reset long` - if your die is a d6.\n`!cc create \\"Psi Die\\" -min 0 -max 3 -reset long` - If your die is a d8.\nThis can be edited however you need it to."' if help else ''}}
+{{'' if help else mod_cc(cc,-1) if v and M.total==M.raw.right.size else "" if v else err(f'No {cc} remaining.\n**{H}**')}}
+{{'' if help else mod_cc(cc,+1) if v and M.total==1 else ''}}
+{{'' if help else f'-f "Roll|{M}|inline"'}}
+{{G=get_cc(cc)}}
+-f "Your {{cc}}{{" Increases!" if M.total==1 else " Decreases!" if M.total==M.raw.right.size else ""}}|{{"1d12" if G==5 else "1d10" if G==4 else "1d8" if G==3 else "1d6" if G==2 else "1d4" if G==1 else "*None*"}}|inline"
+-footer "{{H}} | Made by @""RiptideMatt" -color <color> -thumb <image>
+
+% !level gvar to subscribe to
+
+!gvar create [  {"Class": "Fighter",
+    "subclass": "Psi Knight",
+    "counters": [{
+        "name": "Psi Die",
+        "level": 3,
+        "value": [0,0,2,2,3,3,3,3,3,3,4,4,4,4,4,4,5,5,5,5],
+        "reset": "long",
+        "display": "bubble",
+        "classLevel": "FighterLevel"
+      },
+      {
+        "name": "Psi Replenishment",
+        "level": 3,
+        "value": 1,
+        "reset": "long",
+        "display": "bubble",
+        "classLevel": "FighterLevel"
+      },
+      {
+        "name": "Bulwark of force",
+        "level": 15,
+        "value": 1,
+        "reset": "long",
+        "display": "bubble",
+        "classLevel": "FighterLevel"
+      }
+    ]
+  },
+  {
+    "Class": "Sorcerer",
+    "subclass": "Psionic Soul",
+    "counters": [{
+        "name": "Psi Die",
+        "level": 1,
+        "value": [2,2,2,2,3,3,3,3,3,3,4,4,4,4,4,4,5,5,5,5],
+        "reset": "long",
+        "display": "bubble",
+        "classLevel": "SorcererLevel"
+      },
+      {
+        "name": "Psi Replenishment",
+        "level": 3,
+        "value": 1,
+        "reset": "long",
+        "display": "bubble",
+        "classLevel": "SorcererLevel"
+    }]
+  }]
