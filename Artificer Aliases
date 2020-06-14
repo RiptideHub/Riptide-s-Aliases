@@ -26,3 +26,60 @@ Spell Storing Item
 {{'' if int(get('ArtificerLevel',0))>10 else err(f'You do not have {cc}\n`!level artificer 11`')}}
 {{f'-title "Store you Spells!" -desc "How to use `!ssi`:\n`{H}`\n" -f "Stored Spell|{get("spellStored").lower()}" -footer "Made by RiptideMatt." -color <color> -thumb <image>' if help else f'-title "{name} stores a spell in their Spell Storing Item!" -desc "Whenever you finish a long rest, you can store a spell." -f "Stored Spell|{get("spellStored").lower()}" -color <color> -thumb <image> -footer "{H}. Made by RiptideMatt."' if A else f'"{S}" -i -f "Spell Storing item|While holding the object, a creature can cast a spell." &*&'}}
 {{"" if help else f'-f "{cc}|{"Ignored" if i else cc_str(cc) if cc_exists(cc) else "*None*"}"'}}
+
+Artillerist
+
+%!! protector
+
+!alias protector embed 
+{{c=combat()}}{{targs,thp=[c.get_combatant(x) for x in &ARGS&]if c and c.me else[],vroll(f"1d8+{intelligenceMod}")}}
+{{[x.set_thp(thp.total) for x in targs] if targs else ''}}
+-title "<name> {{['tries to use','uses'][targs!=[]]}} their Protector Cannon!" 
+-desc "The Eldritch Cannon {{'can ' if targs else ''}} does stuff.{{' You can provide additional targets by passing them as arguments, e.g. `!protector jane ellen andy mike luke`. Do **not** use the `-t` argument' if targs==[] else ''}}" 
+{{f'-f "Temp HP Roll|{thp}"' if targs else ''}}
+-footer "{{'\n'.join([str(x) for x in targs]) if targs else 'You must be in init to use this alias.'}}" 
+-color <color> -thumb <image>
+
+Battle Smith
+
+%!! ajolt
+
+!alias ajolt embed
+{{P,a,i,c,H,cc=int(get("ArtificerLevel",0)),argparse(&ARGS&),'-i' in &ARGS&,combat(),f'!djolt [heal|damage] [-i] [-t target] [crit]',"Arcane Jolt"}}
+{{cr,t,v=2 if 'crit' in a else 1,a.last("t"),cc_exists(cc) and get_cc(cc)>0}}
+{{t,j=c.get_combatant(t) if c and t else None,'4' if P>14 else '2'}}
+{{('' if i else mod_cc(cc,-1) if v else err(f'No {cc}s remaining.\n**{H}**')) if P>8 and "Battle Smith" in get('subclass') else err(f'You do not have this Ability!\n`!level artificer battle smith 9`')}}
+{{S=f'{"-" if "heal" in a else ""}{j}d6[{"healing" if "heal" in a else "force" if "damage" in a else "force"}]'}}
+{{D=t.damage(S,crit=cr==2).damage if t else vroll(S,cr)}} 
+-title "<name> {{"uses" if v else "tries to use"}} {{cc}}!"
+{{f'-desc "You can heal or hurt an enemy."'}}
+{{f'-f "{t.name}|{D}"' if t else f'-f "Meta|**Damage{" (CRIT!)" if cr==2 else ""}:** {D}|inline"'}}
+{{f'-f "{cc}{" (-1)" if not i else ""}|{cc_str(cc) if cc_exists(cc) else "*None*"}|inline"'}}
+-footer "{{f"{t}\n" if t else ""}}{{H}} | Revamped by FuriousHotDog" -color <color> -thumb <image>
+
+%!! deflect
+
+!alias deflect embed 
+{{P,a,i,c,H=int(get("ArtificerLevel",0)),argparse(&ARGS&),'-i' in &ARGS&,combat(),f'!deflect [-t target](if lvl 15+) [-i]'}}
+{{t=a.last("t")}}
+{{t=c.get_combatant(t) if c and t else None}}
+{{S=f'1d4+{intelligenceMod}[force]'}}
+{{D=t.damage(S).damage if t and P>14 else vroll(S)}} 
+-title "<name>'s Steel Defender Tries to Deflect the Attack!"
+-desc "{{"The steel defender Deflects an attack." if P>2 and "Battle Smith" in get('subclass') else err(f'You do not have this Ability!\n{H}')}}"
+{{f' -f "Improvement|At 15th level, your steel defender becomes more powerful: \n- The enemy takes damage from this."' if P>14 else ''}}
+{{(f'-f "{t.name}|{D}"' if t else f'-f "Meta|**Damage:** {D}"') if P>14 else ''}}
+-footer "{{f"{t}\n" if t and P>14 else ""}}{{H}} | Created by FuriousHotDog" -color <color> -thumb <image>
+
+%!! repair
+
+!alias repair embed 
+{{c,cc,i=combat(), "Repair", '-i' in &ARGS&}}
+{{targs,v,hp=[c.get_combatant(x) for x in &ARGS&]if c and c.me else[],cc_exists(cc) and get_cc(cc)>0,vroll(f"2d8+{proficiencyBonus}")}}
+{{[x.mod_hp(hp.total,0) for x in targs] if targs else ''}}
+-title "Your Steel Defender {{['tries to use','uses'][targs!=[]]}} their Repair Protocols!" 
+-desc "The defender restores HP.{{' You can provide additional targets by passing them as arguments, e.g.!defender jane ellen andy mike luke.' if targs==[] else ''}}" 
+{{'' if i else mod_cc(cc,-1) if v else err(f'No {cc}s remaining.')}} 
+{{f'-f "HP Roll|{hp}"' if targs else ''}}
+{{f'-f "{cc} {"(-1)" if not i else ""}| {cc_str(cc) if cc_exists(cc) else "*None*"}"'}}
+-footer "{{'\n'.join([str(x) for x in targs]) if targs else 'You must be in init to use this alias.'}}" -color <color> -thumb <image>
