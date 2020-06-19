@@ -27,7 +27,17 @@ Spell Storing Item
 {{f'-title "Store you Spells!" -desc "How to use `!ssi`:\n`{H}`\n" -f "Stored Spell|{get("spellStored").lower()}" -footer "Made by RiptideMatt." -color <color> -thumb <image>' if help else f'-title "{name} stores a spell in their Spell Storing Item!" -desc "Whenever you finish a long rest, you can store a spell." -f "Stored Spell|{get("spellStored").lower()}" -color <color> -thumb <image> -footer "{H}. Made by RiptideMatt."' if A else f'"{S}" -i -f "Spell Storing item|While holding the object, a creature can cast a spell." &*&'}}
 {{"" if help else f'-f "{cc}|{"Ignored" if i else cc_str(cc) if cc_exists(cc) else "*None*"}"'}}
 
+Alchemist
+# Experimental Elixir
+
+%!! elixir
+
+!alias elixir tembed {{args = &ARGS&}}
+{{get_gvar("ab76e01c-a319-4c9b-89f6-7c543dbbb08c").replace('@',str(args))}}
+
+
 Artillerist
+# Protector Cannon
 
 %!! protector
 
@@ -41,6 +51,7 @@ Artillerist
 -color <color> -thumb <image>
 
 Battle Smith
+# Arcane Jolt
 
 %!! ajolt
 
@@ -58,6 +69,7 @@ Battle Smith
 -footer "{{f"{t}\n" if t else ""}}{{H}} | Revamped by FuriousHotDog" -color <color> -thumb <image>
 
 %!! deflect
+# Steel Defender Deflect Attack
 
 !alias deflect embed 
 {{P,a,i,c,H=int(get("ArtificerLevel",0)),argparse(&ARGS&),'-i' in &ARGS&,combat(),f'!deflect [-t target](if lvl 15+) [-i]'}}
@@ -72,6 +84,7 @@ Battle Smith
 -footer "{{f"{t}\n" if t and P>14 else ""}}{{H}} | Created by FuriousHotDog" -color <color> -thumb <image>
 
 %!! repair
+# Steel Defender Repair Action
 
 !alias repair embed 
 {{c,cc,i=combat(), "Repair", '-i' in &ARGS&}}
