@@ -140,3 +140,8 @@ Blood Maledicts
 {{mod_hp(-R.total) if amp else ""}}
 {{f'-f "{cc} {"(-1)" if not i else ""}| {cc_str(cc) if cc_exists(cc) else "*None*"}"'}}
 -footer "!bexpose {{H}} | By RiptideMatt" -color <color> -thumb <image>
+
+%!! bbind
+
+!alias bbind tembed {{args = &ARGS&}}
+{{get_gvar("0c98743d-cc51-4e72-9675-7661ed91bf57").replace('@',str(args))}}
