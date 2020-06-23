@@ -78,8 +78,8 @@ Battle Smith
 {{S=f'1d4+{intelligenceMod}[force]'}}
 {{D=t.damage(S).damage if t and P>14 else vroll(S)}} 
 -title "<name>'s Steel Defender Tries to Deflect the Attack!"
--desc "{{"The steel defender Deflects an attack." if P>2 and "Battle Smith" in get('subclass') else err(f'You do not have this Ability!\n{H}')}}"
-{{f' -f "Improvement|At 15th level, your steel defender becomes more powerful: \n- The enemy takes damage from this."' if P>14 else ''}}
+-desc "{{"The defender does stuff" if P>2 and "Battle Smith" in get('subclass','') else err(f'You do not have this Ability!\n{H}')}}"
+{{f' -f "Improvement| At 15th level, your steel defender becomes more powerful: \n- The defender does damage"' if P>14 else ''}}
 {{(f'-f "{t.name}|{D}"' if t else f'-f "Meta|**Damage:** {D}"') if P>14 else ''}}
 -footer "{{f"{t}\n" if t and P>14 else ""}}{{H}} | Created by FuriousHotDog" -color <color> -thumb <image>
 
