@@ -90,8 +90,8 @@ Battle Smith
 {{c,cc,i=combat(), "Repair", '-i' in &ARGS&}}
 {{targs,v,hp=[c.get_combatant(x) for x in &ARGS&]if c and c.me else[],cc_exists(cc) and get_cc(cc)>0,vroll(f"2d8+{proficiencyBonus}")}}
 {{[x.mod_hp(hp.total,0) for x in targs] if targs else ''}}
--title "Your Steel Defender {{['tries to use','uses'][targs!=[]]}} their Repair Protocols!" 
--desc "The defender restores HP.{{' You can provide additional targets by passing them as arguments, e.g.!defender jane ellen andy mike luke.' if targs==[] else ''}}" 
+{{'' if int(get("ArtificerLevel",0))>2 and "Battle Smith" in get("subclass","") else err('You do not have this ability\n`!level artificer 3 battle`')}}
+-title "Your Steel Defender {{['tries to use','uses'][targs!=[]]}} their Repair Protocols!" -desc "The steeld defender heals.{{' You can provide additional targets by passing them as arguments, e.g.!defender jane ellen andy mike luke.' if targs==[] else ''}}" 
 {{'' if i else mod_cc(cc,-1) if v else err(f'No {cc}s remaining.')}} 
 {{f'-f "HP Roll|{hp}"' if targs else ''}}
 {{f'-f "{cc} {"(-1)" if not i else ""}| {cc_str(cc) if cc_exists(cc) else "*None*"}"'}}
