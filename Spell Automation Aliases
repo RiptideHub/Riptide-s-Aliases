@@ -15,16 +15,16 @@
 -footer "EE 150 | {{H}} | @""RiptideMatt" -color <color> {{'' if ta else f'-thumb {image}'}}
 
 %!! hex
-
-!alias hex cast "hex" {{"&*&"}}
+!alias hex {{"cast hex" if &ARGS& else "embed"}} {{"&*&"}}
 {{a,l,c=argparse(&ARGS&),["strength","dexterity","constitution","intelligence","wisdom","charisma"],combat()}}
 {{s,t=[x for x in l if a.last('score').lower() in x] if a.get('score') else [get('storedAbilityScore','')],a.last("t")}}
 {{s=s[0] if s else err('No ability')}}
 {{set_cvar('storedAbilityScore',s)}}
 {{s=s if s else err('No s')}}
 {{t=c.get_combatant(t) if c and t else ""}}
-{{t.add_effect(f'Disadvantage on {s} checks', '-dur 600') if t else ''}}
--f "Effect|Disadvantage on {{s}} checks."
+{{t.add_effect(f'Disadvantage on {s} checks', '-dur 600') if t and &ARGS& else ''}}
+{{f'-f "Effect|Disadvantage on {s} checks."' if &ARGS& else ''}}
+{{'-title "Hex this!" -desc "How to use `!hex`!\n`!hex -score [score] [args for casting normally]`" -color <color> -color <color> -footer "Made by @ RiptideMatt"' if not &ARGS& else ''}}
 
 %!! shield
 
