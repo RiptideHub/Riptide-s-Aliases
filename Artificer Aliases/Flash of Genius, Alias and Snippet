@@ -1,0 +1,17 @@
+!flashg [target] [result]
+
+!alias flashg embed 
+{{cc,a,i="Flash of Genius",int(&ARGS&[1]) if len(&ARGS&)>1 and &ARGS&[1].isdigit() else int("0"),intelligenceMod}}
+{{v=cc_exists(cc) and get_cc(cc)>0}} 
+{{mod_cc(cc,-1,True) if v else err(f'You are out of {cc}.')}}
+-title "<name> {{"uses" if v else "tries to use"}} their {{cc}}{{f" on {&ARGS&[0]}" if &ARGS& else ""}}!"
+-desc "<name> can use their reaction to do stuff."
+-f "{{cc}} (-1)|{{cc_str(cc)}}|inline" 
+{{f'-f "New Value|{a}+{i} = {a+i}|inline"' if a else f'-f "Intelligence Modifier|{i}|inline"'}}
+-footer "!flashg [target] [result] | Made by Matthew" -color <color> -thumb <image>
+
+
+# Just something to add to your own checks if you were to use it on yourself.
+
+!snippet flashg -b {{intelligenceMod}} 
+{{cc="Flash of Genius"}} {{v=cc_exists(cc) and get_cc(cc)}} -f "Flash of Genius | {{"You do not have this ability." if not cc_exists(cc) else "You must take a long rest to regain your expended uses." if not v else "You have a flash Of genius!"}}" {{mod_cc(cc, -1) if v else ""}} -f "{{cc}}|{{cc_str(cc) if cc_exists(cc) else "*None*"}}"
