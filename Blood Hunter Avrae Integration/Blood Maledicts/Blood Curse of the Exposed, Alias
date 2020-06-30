@@ -1,0 +1,14 @@
+!bexpose [-i] [-t target] [amp]
+
+!alias bexpose embed {{P,a,i,c,H,cc=get('BloodHunterLevel',get('Blood_HunterLevel',0)), argparse(&ARGS&),'-i' in &ARGS&,combat(),f'[-i] [-t target] [amp]',"Blood Maledict"}}
+{{bhl,v,T=int(P),cc_exists(cc) and get_cc(cc)>0,a.last("t")}}
+{{m=4+2*(bhl>4)+2*(bhl>10)+2*(bhl>16)}}
+{{p,amp,R,T=int(P) >= 2,m if 'amp' in a else '',vroll(f'1d{m}'),c.get_combatant(T) if c and T else None}}
+-title "<name> {{"uses" if v else "tries to use"}} Blood Curse of the Exposed on {{T.name if T else "the Target"}}!"
+{{f'-desc "When a creature you can see within 30 feet is hit by an attack or spell, you can use your reaction to temporarily weaken their resilience against it. Until the end of the turn, the target loses resistance to the damage types of the triggering attack or spell."' if P or i else err(f'You do not have this Ability!\n **{H}**')}}
+{{f' -f "Amplified| The target instead loses invulnerability to the damage types of the triggering attack or spell, having resistance to them until the end of the turn."' if amp else ''}}
+{{'' if i else mod_cc(cc,-1) if v else err(f'No {cc}s remaining.\n **{H}**')}}
+{{f'-f "Amplified Damage | {R}" -f "Health (-{R.total})|{hp_str()}"' if amp else ''}}
+{{mod_hp(-R.total) if amp else ""}}
+{{f'-f "{cc} {"(-1)" if not i else ""}| {cc_str(cc) if cc_exists(cc) else "*None*"}"'}}
+-footer "!bexpose {{H}} | By RiptideMatt" -color <color> -thumb <image>
