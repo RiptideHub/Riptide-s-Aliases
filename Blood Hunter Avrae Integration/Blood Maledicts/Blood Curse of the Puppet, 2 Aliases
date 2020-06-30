@@ -1,0 +1,25 @@
+!bpup [-i] [-t puppet] [amp]
+
+!alias bpup embed {{P,a,i,c,H,cc=get('BloodHunterLevel',get('Blood_HunterLevel',0)), argparse(&ARGS&),'-i' in &ARGS&,combat(),f'[-i if not in combat] [-t puppet] [amp]',"Blood Maledict"}}
+{{bhl,v,T=int(P),cc_exists(cc) and get_cc(cc)>0,a.last("t")}}
+{{m=4+2*(bhl>4)+2*(bhl>10)+2*(bhl>16)}}
+{{p,amp,R,T=int(P) >= 2,m if 'amp' in a else '',vroll(f'1d{m}'),c.get_combatant(T) if c and T else None}}
+-title "<name> {{"uses" if v else "tries to use"}} Blood Curse of the Fallen Puppet on {{T.name if T else "the Target"}}!"
+{{f'-desc "To use this alias - please type `!bpup -t [target] [amp]` where `target` is the monster you are possessing and `amp` if you amplify the curse.\n\nWhen a creature you can see within 30 feet of you drops to 0 hit points, you can use your reaction to give that creature a final act of aggression. That creature immediately makes a single weapon attack against a target of your choice within its attack range.\n\n**Following this alias - use `!pupaoo [attack] -t [target]` to attack!** Where `[attack]` is an attack from the possessed monster and `[target]` is the target to be attacked."' if P or i else err(f'You do not have this Ability!\n **{H}**')}}
+{{f' -f "Amplified|You can first move the cursed creature up to half their speed, and you grant a bonus to the cursed creature’s attack roll equal to your Intelligence modifier (minimum of +1)."' if amp else ''}}
+{{'' if i else mod_cc(cc,-1) if v else err(f'No {cc}s remaining.\n **{H}**')}}
+{{f'-f "Hemocraft Die | {R}" -f "Health (-{R.total})|{hp_str()}"' if amp else ''}}
+{{mod_hp(-R.total) if amp else ""}}
+{{f'-f "{cc} {"(-1)" if not i else ""}| {cc_str(cc) if cc_exists(cc) else "*None*"}"'}}
+-footer "!bpup [-t target] [amp] | Made by FuriousHotDog" -color <color> -thumb <image>
+{{c.me.add_effect(f'Puppet {T.name}{" Amplified" if amp else ""}','-dur 1') if T else ''}}
+-f "{{T.name if T else "Effect"}}|{{c.me.get_effect(f'Puppet {T.name}') if v and T else "Not in initiative"}}"
+
+# Make sure to grab this alias to!
+
+!pupaoo [weapon] [-t target]
+
+!alias pupaoo i aoo {{combat().me.get_effect('Puppet').name.replace('Puppet ','') if combat().me.get_effect('Puppet') else err('**Please ensure you use the `!bpup -t [target] [amp]` alias before using this one.**')}} 
+{{"&*&" if "-t" in "&*&" else err('**Please use the alias as follows - `!pupaoo [weapon] -t [target]`**')}} 
+-b {{intelligenceMod if "Amplified" in combat().me.get_effect('Puppet').name else "0"}}
+{{combat().me.remove_effect('Puppet')}}
