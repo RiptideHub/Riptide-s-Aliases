@@ -1,5 +1,7 @@
 % The !level gvar
 
+# To set your level correctly with the !level alias so that counters can properly be made, just make sure you grab the !level alias from the Avrae Developer server.
+
 !level subscribe a55768e6-9b31-4dfc-9fbd-2a601e419823
 
 Gsheet users, name the class in the class info section Blood_Hunter.
