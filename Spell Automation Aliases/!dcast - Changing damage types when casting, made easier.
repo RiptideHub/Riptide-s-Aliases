@@ -1,0 +1,9 @@
+!dcast
+
+!alias dcast {{args,a=argparse(&ARGS&),&ARGS& if &ARGS& else ''}}{{"embed" if &ARGS& and ("?" in a[0]) else "cast"}} {{"&*&"}}
+{{type=args.last('dtype').lower() if args.get('dtype') else ''}}
+{{set_cvar('storedDamageType',type) if type else ''}}
+{{eaf = f"Elemental Adept: {type}".lower() in get('feats', '').lower()}}
+{{"-resist 0 -mi 2" if eaf else ''}}
+{{'' if type else f"-dtype {get('storedDamageType')}"}}
+{{'-title "The chrome finish - how to use `!dcast`!" -desc "`!dcast [spell] [-dtype <damageType>] [args]`\nThe damage type is stored for later, which means you can just do `!dcast` without `-dtype` and it\'ll pull the stored damage type.\nKeep in mind this only works as a blanket damage changer, if the spell has multiple damage types and you want to change one, you\'ll still want to use `-dtype` normally for that." -footer "Made by RiptideMatt | `!dcast [spell] [args]`" -color <color> -thumb <image>' if &ARGS& and ("?" in a[0]) else ""}}
