@@ -1,0 +1,7 @@
+!alias gv {{a,i=argparse(&ARGS&),"-i" in &ARGS&}}{{h="help" in a or "?" in a}}{{A=int(&ARGS&[1]) if len(&ARGS&)>1 and &ARGS&[1] and not h else int("0")}}{{"embed" if h else "a"}} 
+{{"" if h else f"{err('No weapon input') if '&1'+'&'=='&1&' else '&1&'}"}} 
+-d {{"" if h else ('1' if '&2'+'&'=='&2&' else '&2&')}}d{{"" if h else ('8' if '&3'+'&'=='&3&' else '&3&')}}[piercing]
+{{f'-title "{name} wants to fire violently!" -desc "How to use `!gv`:\n`!gv <weapon> <amount of grit> <die size (6, 8 etc)>`\nEx: `!gv palm 1 8` for the palm pistol, using 1 grit." -color <color> -thumb <image>' if h else '&*&'}} 
+{{"" if h or i else mod_cc("Grit",-A,True)}} 
+-f "Violent Shot|For each grit point expended, the attack gains a +2 to the firearm’s misfire score. If the attack hits, you can roll one additional weapon damage die per grit point spent when determining the damage." 
+-f "Grit{{'' if h or not A else f" (-{A})"}}|{{cc_str("Grit")}}"
