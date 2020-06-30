@@ -1,0 +1,10 @@
+!protector [target1 target2 etc]
+
+!alias protector embed 
+{{c=combat()}}{{targs,thp=[c.get_combatant(x) for x in &ARGS&]if c and c.me else[],vroll(f"1d8+{intelligenceMod}")}}
+{{[x.set_thp(thp.total) for x in targs] if targs else ''}}
+-title "<name> {{['tries to use','uses'][targs!=[]]}} their Protector Cannon!" 
+-desc "The Eldritch Cannon {{'can ' if targs else ''}} does stuff.{{' You can provide additional targets by passing them as arguments, e.g. `!protector jane ellen andy mike luke`. Do **not** use the `-t` argument' if targs==[] else ''}}" 
+{{f'-f "Temp HP Roll|{thp}"' if targs else ''}}
+-footer "{{'\n'.join([str(x) for x in targs]) if targs else 'You must be in init to use this alias.'}}" 
+-color <color> -thumb <image>
