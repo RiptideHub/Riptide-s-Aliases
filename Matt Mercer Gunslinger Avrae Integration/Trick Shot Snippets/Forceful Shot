@@ -1,0 +1,5 @@
+!snippet forceful {{cc="Grit"}} {{v=cc_exists(cc) and get_cc(cc)}} 
+-title "<name> {{"shoots" if v else "tries to shoot"}} a Forceful Shot with [aname]!" 
+-f "Forceful Shot | {{"You do not have this ability." if not cc_exists(cc) else "You must take a short or long rest to regain your expended Grit points." if not v else "On a hit, the creature suffers normal damage and must succeed on a Strength saving throw or be pushed 15 feet away from you.**Do `!fighter gunforce -t target` to force the save**"}}" 
+{{mod_cc(cc, -1) if v else ""}} 
+-f "{{cc}}|{{cc_str(cc) if cc_exists(cc) else "*None*"}}"
