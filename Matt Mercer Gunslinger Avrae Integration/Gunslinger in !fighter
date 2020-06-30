@@ -1,0 +1,6 @@
+This alias has the Gunslinger Automated in it, but it still needs another alias and snippets. (This also includes Champion)
+
+!fighter
+
+!alias fighter tembed
+{{f'''{'{'*2}a,gvar=list({&ARGS&}),load_json(get_gvar("26ec5aeb-3710-4279-a8b2-e59dffe9c8bb")){'}'*2}'''}}{{f'''{'{'*2}features=gvar.f + load_json("[]"){'}'*2}'''}} {{get_gvar("237e8439-b190-4429-92ed-fb429c6eb4d9")}}
