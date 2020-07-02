@@ -1,0 +1,9 @@
+!alias arcward {{a,cc,L,h,spells,sg,on,M,H=&ARGS&,"Arcane Ward",int(get("WizardLevel",level)),"?"=="&1&",[],load_json(get_gvar('1a661d94-20bd-4264-80ee-75e546294ccd')),"&1&".strip("+-").isdigit(),intelligenceMod,'!arcward [spell|thp|?] [args for casting if spell] [-max]'}}{{sn,A,v=a[0] if a else '',argparse(a),cc_exists(cc) and get_cc(cc)>0}}{{'cast' if "&1&" in sn and not on and not h else 'embed'}}
+"{{sn}}" {{"&*&"}}
+{{_,m= [[spells.append({'name':spell.name, 'level':spell.level}) for spell in sg if spell.level == level] for level in range(10)],A.last("max") if A.last("max") else 0}}
+{{sl=A.last('l', default=[i.level for i in spells if sn.lower() in i.name.lower()][0], type_=int) if "&1&" in sn and not on and not h else 0}}{{'' if a or h else mod_cc(cc,-1) if v else err(f'You cannot use {cc} until you finish a long rest.')}}{{'' if h else set_temphp(get_temphp()+int("&1&")) if on else (set_temphp(min(int(m),(sl*2)+get_temphp())) if A.last("max") else set_temphp((sl*2)+get_temphp())) if "&1&" in sn and not on else set_temphp((L*2)+M) if get_temphp()<1 else set_temphp((L*2)+M+get_temphp())}}
+{{'-title "How to use `!arcward`!"' if h else '' if "&1&" in sn and not on else f'-title "{name} uses Arcane Ward!"'}}
+-desc "{{f"`{H}`\nWhen you are given THP from any source, add it manually with the alias if you have activated your Arcane Ward.\nRemember to use the `-max` argument when casting with the alias so that it won't overflow above your ward (The value being your THP + Max Ward HP)." if h else f"A translucent field of arcane energy surrounds {name} like a shield."}}"
+{{f'-f "{cc}|{cc_str(cc)}|inline"' if h else '' if a else f'-f "{cc} (-1)|{cc_str(cc)}|inline"'}}
+-f "Temporary Hit Points{{'' if h else f' (+{sl*2})' if "&1&" in sn and not on else f' ({"" if "-" in "&1&" else "+"}&1&)' if on else f' (+{(L*2)+M})'}}|{{get_temphp()}}|inline"
+-footer "{{H}} | Made by RiptideMatt" -color <color> -thumb <image>
