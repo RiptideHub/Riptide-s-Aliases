@@ -1,6 +1,6 @@
 !ssi [store <spell>] [args] [?]
 
-!alias ssi {{args,a=argparse(&ARGS&),&ARGS&}}{{store,cast=a[0] if len(a)>1 else '',a[1] if len(a)>1 else ''}}{{cc,H,A,i,help='Spell Storing Item',f'!ssi [store <spell>] [args] [?]',"store" if "store" in store else '','-i' in a,"help" in a or "?" in a}}{{'embed' if A=='store' or help else 'cast'}} 
+!alias ssi {{args,a=argparse(&ARGS&),&ARGS&}}{{store,cast=a[0] if len(a)>1 else '',a[1] if len(a)>1 else ''}}{{cc,H,A,i,help='Spell-Storing Item',f'!ssi [store <spell>] [args] [?]',"store" if "store" in store else '','-i' in a,"help" in a or "?" in a}}{{'embed' if A=='store' or help else 'cast'}} 
 {{'' if get('spellStored') or A=='store' else err(f'No spell stored!\n`{H}`')}}
 {{S,v=cast if "&*&" and A else get('spellStored').lower(),cc_exists(cc) and get_cc(cc)}}
 {{S=[x for x in load_json(get_gvar('5a2117dd-6c36-4f27-a258-24f42149b05c')) if S in x.lower()] if S else []}}
