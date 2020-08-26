@@ -6,7 +6,7 @@
 {{'' if i else mod_cc(cc, -1) if v else err(f'You must take a long rest to regain use of this feature\n **{H}**') if B>2 and "Lycan" in get('subclass','') else err(f'You do not have this Ability!\n`!level blood 3 lycan`')}} 
 -title "<name> {{"activates" if v or i else "tries to activate"}} their Hybrid Form!" 
 -desc "As a bonus action, you can transform into your Hybrid form for up to 1 hour. You can speak, use equipment, and wear armor in this form. You can revert to your normal form earlier by using a bonus action. You automatically revert to your normal form if you fall unconscious, drop to 0 hit points, or die."
-{{c.me.add_effect('Hybrid Form',f'-resist slashing -resist bludgeoning -resist piercing -d {"1" if (B<11) else "2" if (B<18) else "3"} -ac +1') if c and c.me and (v or i) else ''}}
+{{c.me.add_effect('Hybrid Form',f'-resist "nonmagical nonsilvered slashing" -resist "nonmagical nonsilvered bludgeoning" -resist "nonmagical nonsilvered piercing" -d {"1" if (B<11) else "2" if (B<18) else "3"} -ac +1') if c and c.me and (v or i) else ''}}
 -f "Effect|{{c.me.get_effect("Hybrid Form") if c and c.me and (v or i) else "Not in Initiative"}}"
 -f "{{cc}}{{"" if i else " (-1)" if v else ""}}|{{"Ignored" if i else cc_str(cc) if C else "*None*"}}" 
 -footer "{{H}} | Made by @""RiptideMatt" -color <color> -thumb <image>
