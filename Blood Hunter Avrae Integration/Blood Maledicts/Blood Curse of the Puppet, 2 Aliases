@@ -11,7 +11,6 @@
 {{f'-f "Hemocraft Die|{R}|inline" -f "Health (-{R.total})|{hp_str()}|inline"' if amp else ''}}
 -f "{{cc}}{{" (-1)" if not i else ""}}|{{cc_str(cc) if cc_exists(cc) else "*None*"}}|inline"
 -footer "{{H}} | Made by FuriousHotDog" -color <color> -thumb <image>
-
 {{c.me.add_effect(f'Puppet {T.name}{" Amplified" if amp else ""}','-dur 1') if T else ''}}
 -f "{{T.name if T else "Effect"}}|{{c.me.get_effect(f'Puppet {T.name}') if v and T else "Not in initiative/No Target"}}|inline"
 
