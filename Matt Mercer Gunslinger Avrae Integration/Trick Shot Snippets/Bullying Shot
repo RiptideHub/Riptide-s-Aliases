@@ -1,4 +1,0 @@
-!snippet bully adv {{cc="Grit"}} {{v=cc_exists(cc) and get_cc(cc)}} 
--title "<name> {{"shoots" if v else "tries to shoot"}} a Bullying Shot to make a Charisma (Intimidation) Check!" 
--f "Bullying Shot | {{"You do not have this ability." if not cc_exists(cc) else "You must take a short or long rest to regain your expended Grit points." if not v else "You can expend one grit point while making a Charisma (Intimidation) check to gain advantage on the roll."}}" 
-{{mod_cc(cc, -1) if v else ""}} -f "{{cc}}|{{cc_str(cc) if cc_exists(cc) else "*None*"}}"

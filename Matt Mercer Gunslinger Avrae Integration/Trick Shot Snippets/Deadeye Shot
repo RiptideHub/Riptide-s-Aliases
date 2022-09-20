@@ -1,4 +1,0 @@
-!snippet deadeye adv {{cc="Grit"}} {{v=cc_exists(cc) and get_cc(cc)}} 
--title "<name> {{"shoots" if v else "tries to shoot"}} a Deadeye Shot with [aname]!" 
--f "Deadeye Shot | {{"You do not have this ability." if not cc_exists(cc) else "You must take a short or long rest to regain your expended Grit points." if not v else "When you make a firearm attack against a creature, you can expend one grit point to gain advantage on the attack roll."}}" {{mod_cc(cc, -1) if v else ""}} 
--f "{{cc}}|{{cc_str(cc) if cc_exists(cc) else "*None*"}}"
