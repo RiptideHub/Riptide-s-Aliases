@@ -1,8 +1,0 @@
-Mercy Monk
-
-Includes automation for the 3rd and 6th level abilities.
-
-%!! mercy
-
-!alias mercy tembed {{args = &ARGS&}}
-{{get_gvar("f4edcd88-f818-4df2-b070-fbe778caead5").replace('@',str(args))}}
