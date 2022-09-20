@@ -1,4 +1,0 @@
-!elixir [fl|bo|he|re|sw|tr|roll] [-t target] [-l #] [-i] 
-
-!alias elixir tembed {{args = &ARGS&}}
-{{get_gvar("ab76e01c-a319-4c9b-89f6-7c543dbbb08c").replace('@',str(args))}}
