@@ -1,0 +1,23 @@
+embed
+
+<drac2>
+
+cc = "Repulsion Shield"
+
+errM = f"\nActive Character: {name}\n`{ctx.prefix}{ctx.alias}`"
+
+character().create_cc_nx(cc, 0, 4, 'long', 'bubble', reset_by='1d4') if "Repulsion Shield" in get('infusions','') else err("You do not have this infusion{errM}")
+
+v = character().cc_exists(cc) and character().cc(cc).value
+
+character().mod_cc(cc, -1) if v else err(f"You are out of {cc}{errM}")
+
+</drac2>
+
+-title "Back you go! <name> uses their Repulsion Shield"
+
+-desc "The shield has 4 charges. While holding it, the wielder can use a reaction immediately after being hit by a melee attack to expend 1 of the shield's charges and push the attacker up to 15 feet away. The shield regains 1d4 expended charges daily at dawn." 
+
+-f "{{cc}}|{{character().cc_str(cc) if character().cc_exists(cc) else "*None*"}}"
+
+-thumb <image> -color <color>
