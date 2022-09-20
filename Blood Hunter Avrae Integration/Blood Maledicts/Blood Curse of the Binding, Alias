@@ -1,4 +1,0 @@
-!bbind [-i] [-t target] [amp]
-
-!alias bbind tembed {{args = &ARGS&}}
-{{get_gvar("0c98743d-cc51-4e72-9675-7661ed91bf57").replace('@',str(args))}}
