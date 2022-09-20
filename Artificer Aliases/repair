@@ -1,0 +1,27 @@
+embed 
+
+<drac2>
+
+cc = "Guardian Armor: Defensive Field"
+
+Art = character().levels.get("Artificer")
+
+errM = f"\nActive Character: {name}\n`{ctx.prefix}{ctx.alias}`"
+
+character().create_cc_nx(cc, "0", f"{proficiencyBonus}", "long", "bubble") if Art>2 and "Armorer" in get("subclass","") else err(f'You do not have this feature{errM}')
+
+v = character().cc_exists(cc) and character().cc(cc).value
+
+character().mod_cc(cc, -1) if v else err(f"Not enough uses left!{errM}")
+
+character().set_temp_hp(Art)
+
+</drac2>
+
+-title "<name> uses Defensive Field!" 
+
+-desc "As a bonus action, you can gain temporary hit points equal to your level in this class, replacing any temporary hit points you already have. You lose these temporary hit points if you doff the armor. You can use this bonus action a number of times equal to your proficiency bonus, and you regain all expended uses when you finish a long rest." 
+
+-f "Health|{{character().hp_str()}}|inline" -color <color> -thumb <image>
+
+-f "{{cc}}|{{character().cc_str(cc) if character().cc_exists(cc) else "*None*"}}|inline"
