@@ -1,0 +1,27 @@
+embed 
+
+<drac2>
+
+P, a, i, c, H = int(get("ArtificerLevel",0)), argparse(&ARGS&), '-i' in &ARGS&,combat(), f'!deflect [-t target](if lvl 15+) [-i]'
+
+errM = f"\nActive Character: {name}\n`{ctx.prefix}{ctx.alias}`"
+
+t = a.last("t")
+
+t = c.get_combatant(t) if c and t else None
+
+S = f'1d4+{intelligenceMod}[force]'
+
+D = t.damage(S).damage if t and P>14 else vroll(S)
+
+</drac2>
+
+-title "<name>'s Steel Defender Tries to Deflect the Attack!"
+
+-desc "{{"The steel defender uses their reaction to imposes disadvantage on the attack roll of one creature it can see that is within 5 feet of it, provided the attack roll is against a creature other than the steel defender." if P>2 and "Battle Smith" in get('subclass','') else err(f'You do not have this Ability!{errM}')}}"
+
+{{f' -f "Improvement| At 15th level, your steel defender becomes more powerful: \n- Whenever your steel defender uses its Deflect Attack, the attacker takes force damage equal to 1d4 + your Intelligence modifier."' if P>14 else ''}}
+
+{{(f'-f "{t.name}|{D}"' if t else f'-f "Meta|**Damage:** {D}"') if P>14 else ''}}
+
+-footer "{{f"{t}\n" if t and P>14 else ""}}{{ctx.prefix}}{{ctx.alias}}" -color <color> -thumb <image>
