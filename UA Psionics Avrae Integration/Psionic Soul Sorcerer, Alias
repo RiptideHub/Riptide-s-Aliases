@@ -1,4 +1,0 @@
-!psip <discover|sorcery|speech|replenish> 
-
-!alias psip tembed {{args = &ARGS&}}
-{{get_gvar("098e8cfe-da66-4059-8224-3d02b6a24856").replace('@',str(args))}}

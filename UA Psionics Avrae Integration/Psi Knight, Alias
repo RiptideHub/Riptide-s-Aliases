@@ -1,4 +1,0 @@
-!psik <strike|field|leap|thrust|move|replenish> [-t target] [-d damage if field] 
-
-!alias psik tembed {{args = &ARGS&}}
-{{get_gvar("5c1b835f-0605-4c3d-a942-fe62f54eb8c6").replace('@',str(args))}}
