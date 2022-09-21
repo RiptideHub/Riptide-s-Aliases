@@ -1,0 +1,67 @@
+embed
+
+<drac2>
+
+ch, first, args, Fig, c, cc, c2, c3, c4 = character(), &ARGS&[0] if &ARGS& else '', argparse(&ARGS&), int(get("FighterLevel",0)), combat(), "Psionic Power: Psionic Energy", "Psi-Powered Leap", "Psionic Power: Recovery", "Psionic Power: Telekinetic Movement"
+
+tn, valid, gett, darg, strike, field, leap, thrust, move, recovery, v2, v3, v4 = args.last("t"), ch.cc_exists(cc) and ch.get_cc(cc)>0, ch.get_cc(cc), args.last("d",0,int), "strike" in first, "field" in first, "leap" in first, "thrust" in first, "move" in first, "recovery" in first, ch.cc_exists(c2) and ch.get_cc(c2)>0, ch.cc_exists(c3) and ch.get_cc(c3), ch.cc_exists(c4) and ch.get_cc(c4)>0
+
+errM = f"\nActive Character: {name}\n`{ctx.prefix}{ctx.alias}`"
+
+'' if Fig>2 and 'Psi Warrior' in get('subclass','') else err(f'You do not have this Ability!{errM}')
+
+'' if valid else err(f'No {cc} left{errM}')
+
+target, H = c.get_combatant(tn) if c and tn else None, f'{ctx.prefix}{ctx.alias} <strike|field|move|leap|thrust> [-t target]{" [-d damage if field]" if field or not args else ""}'
+
+die="1d12" if Fig>16 else "1d10" if Fig>10 else "1d8" if Fig>4 else "1d6" if Fig else "0"
+
+ro = vroll(die)
+
+prot = ro.total+intelligenceMod if gett>0 else ''
+
+fie = prot if darg>=prot else darg if darg and valid else 0
+
+damage = target.damage(f'{ro.total}+{intelligenceMod}[force]').damage if target and strike else ro
+
+ch.mod_cc(cc,-1) if valid and (strike or field or leap) else ""
+
+ch.mod_cc(c2,-1) if v2 and leap else ''
+
+ch.mod_cc(c3,-1) if v3 and recovery else ''
+
+ch.mod_cc(cc,+1) if v3 and recovery else ''
+
+(ch.mod_cc(c4,-1) if v4 else ch.mod_cc(cc, -1) if valid else '') if move else ''
+
+dc, s = intelligenceMod+8+proficiencyBonus,target.save('str',[None,True,False][args.adv()]) if thrust and target else None
+
+saved = s.total>=dc if s and thrust else None
+
+(target.modify_hp(int(fie),0) if target and c else mod_hp(int(fie),0)) if field else ''
+
+</drac2>
+
+-title "<name> {{'uses' if (strike or field or leap or thrust or move) and valid else 'tries to use' if first else 'checks'}} {{'Psionic Strike' if strike else 'Protective Field' if field else 'Psi-Powered Leap' if leap else "Telekinetic Thrust" if thrust else "Telekinetic Movement" if move else 'Psionic Recovery' if recovery else f'their {cc}'}}{{f" on {tn}" if tn and (move or thrust or strike or field) else ""}}!"
+
+-desc "{{f'You can propel your weapons with psionic force. Once on each of your turns, immediately after you hit a target within 30 feet of you with an attack and deal damage to it with a weapon, you can expend one Psionic Energy die, rolling it and dealing force damage to the target equal to the number rolled plus your Intelligence modifier.' if strike else f'When you or another creature you can see within 30 feet of you takes damage, you can use your reaction to expend one Psionic Energy die, roll the die, and reduce the damage taken by the number rolled plus your Intelligence modifier (minimum reduction of 1), as you create a momentary shield of telekinetic force.' if field else f'As a bonus action, you can propel your body with your mind. You gain a flying speed equal to twice your walking speed until the end of the current turn. Once you take this bonus action, you can\'t do so again until you finish a short or long rest, unless you expend a Psionic Energy die to take it again.' if leap else 'When you deal damage to a target with your Psionic Strike, you can force the target to make a Strength saving throw against a DC equal to 8 + your proficiency bonus + your Intelligence modifier. If the save fails, you can knock the target prone or move it up to 10 feet in any direction horizontally.' if thrust else 'You can move an object or a creature with your mind. As an action, you target one loose object that is Large or smaller or one willing creature, other than yourself. If you can see the target and it is within 30 feet of you, you can move it up to 30 feet to an unoccupied space you can see. Alternatively, if it is a Tiny object, you can move it to or from your hand. Either way, you can move the target horizontally, vertically, or both. Once you take this action, you can\'t do so again until you finish a short or long rest, unless you expend a Psionic Energy die to take it again.' if move else 'As a bonus action, you can regain one expended Psionic Energy die, but you can’t do so again until you finish a short or long rest.' if recovery else f'`{H}`'}}"
+
+{{f'-f "{cc} Roll|{ro}\n{f"**Intelligence Modifier:** + {intelligenceMod}" if "field" in args and "strike" not in args else ""}|inline"' if strike or field else ''}}
+
+{{f'-f "Meta|**DC:** {dc}\n{"" if target else f"STR Save"}\n{"" if target else "Knock prone/move it up to 10 feet in any direction horizontally"}|inline"' if thrust else ''}}
+
+{{(f'-f "{target.name}|**DC:** {dc}\n**STR Save:** {s}; Success!"' if saved else f'-f "{target.name}|**STR Save:** {s}; Failure!\nKnock prone/move it up to 10 feet in any direction horizontally"') if target and thrust else ''}}
+
+{{((f'-f "{target.name}|{damage}|inline"' if target else f'-f "Meta|**Damage:** {vroll(f"{ro.total}+{intelligenceMod}")}|inline"') if strike else '') if valid else ''}}
+
+{{(f'-f "{target.name if target else "Damage"} (+{fie})|**Input:** {darg}\n**Blocked:** {fie}|inline"' if darg else '') if field else ''}}
+
+-f "Your {{cc}}|{{ch.cc_str(cc)}}|inline"
+
+{{f' -f "Your {c2}|{ch.cc_str(c2)}|inline"' if leap and v2 else ''}}
+
+{{f' -f "Your {c3}|{ch.cc_str(c3)}|inline"' if recovery and v3 else ''}}
+
+{{f' -f "Your {c4}|{ch.cc_str(c4)}|inline"' if move and v4 else ''}}
+
+-footer "{{f"{target}\n" if target and (strike or field) else ""}}{{H}} | Made by RiptideMatt" -color <color> -thumb <image>
