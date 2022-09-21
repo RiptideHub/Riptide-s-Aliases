@@ -10,15 +10,9 @@ character().create_cc_nx(cc, 0, intelligenceMod*2, "long", "bubble") if characte
 
 S, v = cast if "&*&" and A else character().get_cvar('spellStored').lower(), character().cc_exists(cc) and character().cc(cc).value
 
-S = [x for x in ["Tasha's caustic brew","comprehend languages","cure wounds","ray of sickness","catapult","detect magic","disguise self","dissonant whispers","faerie fire","grease","heroism","jump","longstrider","purify good and drink","thunderwave","aid","alter self","arcane lock","blur","continual flame","darkvision","detect thoughts","enhance ability","flaming sphere","heat metal","invisibility","lesser restoration","levitate","locate object","protection from poison","rope trick","scorching ray","shatter","see invisibility","spider climb","warding bond","web","magic missile","mirror image","warding wind","unseen servant","knock","arcane lock"] if S in x.lower()] if S else []
+S = [x for x in ["tasha's caustic brew","comprehend languages","cure wounds","ray of sickness","catapult","detect magic","disguise self","dissonant whispers","faerie fire","grease","heroism","jump","longstrider","purify good and drink","thunderwave","aid","alter self","arcane lock","blur","continual flame","darkvision","detect thoughts","enhance ability","flaming sphere","heat metal","invisibility","lesser restoration","levitate","locate object","protection from poison","rope trick","scorching ray","shatter","see invisibility","spider climb","warding bond","web","magic missile","mirror image","warding wind","unseen servant","knock","arcane lock"] if S in x.lower()] if S else []
 
-S = S[0] if S else err("That is not a valid spell! Spell-Storing Item can only take an Artificer spell of 1st level or Higher that has a casting time of 1 action.{errM}")
-
-</drac2>
-
-"{{"" if store else S}}"
-
-<drac2>
+S = S[0] if S else err(f"That is not a valid spell! Spell-Storing Item can only take an Artificer spell of 1st level or Higher that has a casting time of 1 action.{errM}")
 
 character().set_cvar('spellStored', S) if A and S else ''
 
