@@ -1,0 +1,16 @@
+<drac2>
+
+ch = character()
+cc = "Grit" if ch.cc_exists("Grit") else "Adept Marksman" 
+
+v = ch.cc_exists(cc) and ch.get_cc(cc)
+
+ch.mod_cc(cc, -1) if v else ""
+
+</drac2>
+
+-title "<name> {{"shoots" if v else "tries to shoot"}} a Dazing Shot with [aname]!" 
+
+-f "Dazing Shot | {{"You do not have this ability." if not ch.cc_exists(cc) else "You must take a short or long rest to regain your expended Grit points." if not v else "On a hit, the creature suffers normal damage and must make a Constitution saving throw or suffer disadvantage on attacks until the end of their next turn. **Do `!fighter gundaze -t target` to force the save**"}}"  
+
+-f "{{cc}}|{{ch.cc_str(cc) if ch.cc_exists(cc) else "*None*"}}"
