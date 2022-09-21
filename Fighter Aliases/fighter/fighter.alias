@@ -1,0 +1,107 @@
+embed
+<drac2>
+ch = character()
+a = &ARGS&
+gvar = load_json(get_gvar("e17f07f2-896d-4570-a48e-55f8bd05188c"))
+
+extra_gvars = load_json(get_svar('fighterExtras', '[]'))
+extra_gvars.extend([gvar for gvar in load_json(get('fighterExtras', '[]')) if gvar not in extra_gvars])
+extra_contents = [load_json(get_gvar(x)) for x in extra_gvars]
+extra_features = []
+[extra_features.extend(x) for x in extra_contents]
+features = gvar.f
+features.extend(extra_features)
+
+subclasses = []
+for feature in features:
+  if not 'sc' in feature:
+    continue
+  if feature.sc in subclasses or not feature.sc:
+    continue
+  subclasses.append(feature.sc)
+
+set_uvar("tcl", subclasses)
+
+c = []
+args, cmbt = argparse(a), combat()
+fighterSubclass = load_json(get("subclass","{}")).get("FighterLevel","")
+
+L = int(get("FighterLevel",0))
+superiorityDice = "0" if not "Battle Master" in fighterSubclass else "d8" if L<10 else "d10" if L<18 else "d12"
+help = not a or ('?' in args or 'help' in args)
+
+ignore = 'i' in args
+
+scl = get("tcl", "")
+
+feature = [x for x in features if not help and a[0] in x.name.lower()+(x.xc.lower() if "xc" in x else "")]
+feature = [x for x in feature if (not "sc" in x or a[0] in x.sc.lower() and a[1]) in x.name.lower()+(x.xc.lower() if "xc" in x else "")] if len(a)>1 and a[0] in " ".join(scl).lower() else feature
+feature = [x for x in feature if a[1 if a[0] in "cmbm" and len(a)>1 else 0].lower() in (x.name+(x.xc.lower() if "xc" in x else "")).replace("Maneuvers","").lower()]
+feature = feature[0] if feature and a else gvar.fl
+
+dice = vroll(feature.dice.replace("#superiorityDice#",superiorityDice)+(f'+{args.join("d","+")}' if args.get("d") else "")) if feature and "dice" in feature and feature.dice else ""
+
+diceTotal = dice.total if dice else 0
+scale = feature.scale[L] if "scale" in feature else ""
+counter = feature.cc if feature and "cc" in feature else ""
+ccnum = 0 if ignore else feature.ccnum if feature and "ccnum" in feature else -1
+ccvalid = ch.get_cc(counter) == feature.ccvalid if "ccvalid" in feature else True
+
+v = not help and (L>=feature.L and (feature.sc in get("subclass") if "sc" in feature and not "!" in feature.sc else 1) and (not counter or (ch.cc_exists(counter) and ch.get_cc(counter)>=-ccnum and ccvalid)))
+ccnum = ccnum if v else 0
+ch.mod_cc(counter,ccnum) if v and counter else ""
+dmgtype = args.last("dtype") if args.last("dtype") else feature.dmgtype if "dmgtype" in feature else "none"
+
+target_cache, targets = args.get('t') + ([f'{name}'] if v and feature and "self" in feature and feature.self and cmbt and cmbt.me else []), []
+target_cache=[[cmbt.get_combatant(i.split('|', 1)[0].replace('{name}', name)) or cmbt.get_group(i.split('|', 1)[0]), argparse(i.split('|', 1)[1] if '|' in i else '')] for i in target_cache if cmbt]
+_ = [targets.append(i) if 'c' in i[0].type else [targets.append([e, i[1]]) for e in i[0].combatants] for i in target_cache if i[0]]
+
+combatantFooter = []
+
+feature = dump_json(feature)
+for x in ["name", "dice", "diceTotal", "strengthMod", "dexterityMod", "constitutionMod", "intelligenceMod", "wisdomMod", "charismaMod", "proficiencyBonus", "FighterLevel", "superiorityDice", "scale","dmgtype"]:
+  feature = feature.replace(f'#{x}#', str(get(x)).replace('"', '′'))
+feature = load_json(feature)
+
+damage = vroll(f"""{feature.damage+(f'+{args.join("d","+")}{"[{dmgtype}]" if args.last("dtype") else ""}' if args.get("d") else "")}{f'[{dmgtype}]' if args.last('dtype') else ''}""", 2 if args.get("crit") else 1) if "damage" in feature else vroll("0")
+thp = vroll(feature.thp) if "thp" in feature else vroll("0")
+DC = int(args.last("dc")) if args.last("dc") else (8 + proficiencyBonus + max(strengthMod, dexterityMod) if feature.save.dc=="strdex" else roll(feature.save.dc)) if feature and "save" in feature and "dc" in feature.save else "None"
+
+targetHeader = [f'-f "{target[0].name}|' for target in targets if v]
+
+targetDamage = [target[0].damage(damage.consolidated()+((f'+{target[1].join("d","+")}') if target[1].get("d") else "")).damage + ("" if (target[0].set_hp(target[0].max_hp) if target[0].hp>target[0].max_hp else "") or (combatantFooter:= combatantFooter+[f' {str(target[0])}']) else "") if "damage" in feature else "" for target in targets if v]
+
+targetTHP = [("" if (target[0].set_temp_hp(thp.total) if target[0].temp_hp<thp.total else "") or (combatantFooter:= combatantFooter+[f' {str(target[0])}']) else "") + f'**Temporary Hit Points:** {thp.total}' if "thp" in feature else "" for target in targets if v]
+
+targetEffect = [(("" if cmbt.me.add_effect(feature.effect.parent.name.replace("#target#",target[0].name), args=feature.effect.parent.args if "args" in feature.effect.parent else None, duration=feature.effect.parent.duration if "duration" in feature.effect.parent else -1, concentration = feature.effect.parent.conc if "conc" in feature.effect.parent else 0, end = feature.effect.parent.end if "end" in feature.effect.parent else 0) or (parent:=cmbt.me.get_effect(feature.effect.parent.name.replace("#target#",target[0].name))) else "") if cmbt and cmbt.me and "parent" in feature.effect else "") + ("" if target[0].add_effect(feature.effect.name.replace("#target#",target[0].name), feature.effect.args if "args" in feature.effect else "", feature.effect.duration if "duration" in feature.effect else -1, feature.effect.conc if "conc" in feature.effect else 0, get("parent"), feature.effect.end if "end" in feature.effect else 0) else "") + f'**Effect:** {target[0].get_effect(feature.effect.name.replace("#target#",target[0].name))}' if "effect" in feature else "" for target in targets if v]
+
+targetText = [feature.targetText.replace("#superiorityDice#", superiorityDice) if "targetText" in feature else "" for target in targets]
+
+
+targetSave = []
+if v and "save" in feature:
+  for target in targets:
+    save = target[0].save(feature.save.type, target[1].adv(False, True) if "adv" in target[1] or "dis" in target[1] else args.adv(False, True))
+    option = feature.save.fail if save.total<DC and "fail" in feature.save else feature.save.success if save.total>=DC and "success" in feature.save else {}
+    targetSave.append(f'**{feature.save.type.upper()} Save:** {save}; {"Failure!" if save.total<DC else "Success!"}'+ ("\n"+target[0].damage(option.damage+((f'+{target[1].join("d","+")}') if target[1].get("d") else "")).damage + ("" if (target[0].set_hp(target[0].max_hp) if target[0].hp-damage.total>target[0].max_hp else "") or (combatantFooter:=combatantFooter+[f' {str(target[0])}']) else "") if "damage" in option else "") + ((subparent:=cmbt.me.add_effect(option.effect.parent.name.replace("#target#",target[0].name), option.effect.parent.args if "args" in option.effect.parent else "", option.effect.parent.duration if "duration" in option.effect.parent else -1, option.effect.parent.conc if "conc" in option.effect.parent else 0, "", option.effect.parent.end if "end" in option.effect.parent else 0) or cmbt.me.get_effect(option.effect.parent.name.replace("#target#",target[0].name)) if cmbt and cmbt.me and "parent" in option.effect else "") or target[0].add_effect(option.effect.name.replace("#target#",target[0].name), option.effect.args if "args" in option.effect else "", option.effect.duration if "duration" in option.effect else -1, option.effect.conc if "conc" in option.effect else 0, subparent if subparent else "", option.effect.end if "end" in option.effect else 0) or f'\n**Effect:** {target[0].get_effect(option.effect.name.replace("#target#",target[0].name))}' if "effect" in option else "")+(f'\n{option.text}' if "text" in option else "") if "save" in feature else "")
+
+
+targetCloser = ['"' for target in targets if v]
+
+_ = (("" if (ch.set_temp_hp(thp.total) if ch.temp_hp()<thp.total else "") or (combatantFooter:=combatantFooter+[f' {name}: {ch.hp_str()}']) else "") or f'**Temporary Hit Points:** {thp.total}' if "thp" in feature else "") or (ch.modify_hp(-damage.total) or ("" if (ch.set_hp(hp) if ch.hp>hp else "") or (combatantFooter:=combatantFooter+[f' {name}: {ch.hp_str()}']) else "") if "damage" in feature else "") if not cmbt and v and "self" in feature and feature.self else ""
+
+save_results = ' '.join(["\n".join([get(x)[i] for x in ["targetHeader", "targetDamage", "targetTHP", "targetEffect", "targetText", "targetSave", "targetCloser"] if get(x) and get(x)[i]]) for i in range(len(targets))])
+
+r = ["uses" if v else "tries to use", (feature.validUse if v else feature.invalidUse) if feature else "", f'{counter}{" ("+("+" if ccnum>0 else "")+str(ccnum)+")" if ccnum else ""}|{ch.cc_str(counter)}' if counter and ch.cc_exists(counter) else "*None*", color, image, "\n".join([f"{x.name}"+(f" - `!fighter {x.xc}`" if "xc" in x else "") for x in features if x['L']<=L and ((not "sc" in x or (exists("subclass") and x.sc.lower() in fighterSubclass.lower())) or "!" in x.sc and (exists("subclass") and not x.sc.replace("!","").lower() in fighterSubclass.lower()))]), dice, diceTotal, save_results, ch.hp_str(), name, damage, " ".join(combatantFooter)+" | " if get("combatantFooter") else "", thp, superiorityDice, DC]
+
+output_text = feature.desc if feature else gvar.fl
+
+for i in range(len(gvar.substitutions)):
+  output_text = output_text.replace(gvar.substitutions[i],str(r[i]))
+
+</drac2>
+
+
+{{output_text}}
+
+{{'' if L else f'-desc "An alias for all everything Fighter related. This alias also Avrae automation of Fighter features. If there are features not shown, you can set your Fighter level with `!level fighter [#] [subclass]`.\n\nYou can subscribe to content with `!fighter sub`.\n\nTo add homebrew, make a copy of this gvar (`8a488dcc-8b18-4049-b027-9beb67b132db`) and add in any features, following the format of this gvar. Then, run `!fighter sub <gvar>` and you will be subscribed to the gvar."'}}
