@@ -1,0 +1,38 @@
+embed 
+
+<drac2>
+
+args = argparse(&ARGS&)
+cc = "Indomitable"
+i = "-i" in &ARGS&
+ch = character()
+v = ch.cc_exists(cc) and ch.cc(cc).value
+c = combat()
+dc = 10 if "death" in args else args.last("dc",0,int)
+mod = "death" if "death" in args else "str" if "str" in args else "dex" if "dex" in args else "con" if "con" in args else "int" if "int" in args else "wis" if "wis" in args else "cha" if "cha" in args else ''
+
+b = f'+{args.last("b",0,int)}' if args.last("b") else ''
+
+ss = int(character().saves.get(f'{mod}')) if mod and "death" not in mod else 0
+s = vroll(f'1d20+{ss}{b}')
+darg = int(&ARGS&[0]) if &ARGS& and &ARGS&[0].isdigit() else 0
+
+</drac2>
+
+-title "<name> uses {{cc}}!"
+
+-desc "You can reroll a saving throw that you fail. If you do so, you must use the new roll, and you can't use this feature again until you finish a long rest."
+
+-f "Meta|**DC:** {{dc}}
+**{{mod.title()}} Save**: {{s}}
+{{("Success!" if s.total>=dc else "Failure!") if dc else ''}}|inline"
+
+{{ch.modify_hp(darg,0) if s.total>=dc and dc and s and "death" not in args else ''}}
+
+{{'' if "death" in args else f'-f "Health|{ch.hp_str()} (+{darg if darg and s.total>=dc and "death" not in args else "0"})|inline"'}}
+
+{{'' if i else character().mod_cc(cc, -1) if v else err(f"You are out of {cc}!")}}
+
+-f "{{cc}}|{{"CC ignored" if i else character().cc_str(cc) if v else "*None*"}}|inline"
+
+-footer "Fighter | Alias Redone by Riptidecord"  -color <color> -thumb <image>
