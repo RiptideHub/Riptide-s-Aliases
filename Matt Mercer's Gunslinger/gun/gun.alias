@@ -1,0 +1,37 @@
+{{ch, args, a = character(), argparse(&ARGS&), &ARGS&}}{{"a" if &ARGS& else "embed"}} {{&ARGS&[0] if &ARGS&[0] else err("No gun selected")}}
+
+<drac2>
+
+rr, S = args.last("rr",1,int), "&1&".lower() if &ARGS& else err("No Gun selected")
+
+S = [x for x in ["blunderbuss","palm pistol","flintlock pistol","pepperbox","bad news","musket","hand mortar"] if S in x.lower()] if S else []
+
+T = "+1 " if "+1" in a else "+2 " if "+2" in a else "+3 " if "+3" in a else ""
+
+S = S[0] if S else ''
+
+cc = f"{T}{S.title()} Bullets"
+
+v = ch.cc_exists(cc)
+
+ch.create_cc_nx(cc, 0) if S else ''
+
+"" if v else ch.set_cc(cc, 1)
+
+v = 1 if ch.get_cc(cc) else 0
+
+ch.mod_cc(cc, -rr) if v else ""
+
+</drac2>
+
+{{"" if v else "miss"}}
+
+-f "{{cc}} (-{{rr}})|{{ch.get_cc(cc)}}"
+
+{{bo = "1" if T=="+1 " else "2" if T=="+2 " else "3" if T=="+3 " else ''}}
+
+{{"magical" if T else ''}}
+
+{{f"-b {bo} -d {bo}" if bo else ""}}
+
+{{"&*&"}}
