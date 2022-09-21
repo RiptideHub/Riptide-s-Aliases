@@ -14,7 +14,10 @@ S = [x for x in ["tasha's caustic brew","comprehend languages","cure wounds","ra
 
 S = S[0] if S else err(f"That is not a valid spell! Spell-Storing Item can only take an Artificer spell of 1st level or Higher that has a casting time of 1 action.{errM}")
 
-character().set_cvar('spellStored', S) if A and S else ''
+if A and S:
+    character().set_cvar('spellStored', S)
+else:
+    ''
 
 if i or help or (A and v):
     ''
