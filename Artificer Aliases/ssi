@@ -16,8 +16,6 @@ S = S[0] if S else err(f"That is not a valid spell! Spell-Storing Item can only 
 
 if A and S:
     character().set_cvar('spellStored', S)
-else:
-    ''
 
 if i or help or (A and v):
     ''
