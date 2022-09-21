@@ -1,0 +1,30 @@
+<drac2>
+
+ch = character()
+cc = "Grit"
+v = ch.cc_exists(cc) and ch.get_cc(cc)
+
+if v:
+	ch.mod_cc(cc, -1)
+else:
+	""
+
+if not ch.cc_exists(cc):
+	c = "You do not have this ability."
+	d = "tries to shoot"
+elif v:
+	c = "When you make a firearm attack against a creature, you can expend one grit point to gain advantage on the attack roll."
+	d = "shoots"
+else:
+	c = "You must take a long rest to regain your expended uses."
+	d = "tries to shoot"
+
+</drac2>
+
+-title "<name> {{d}} a Deadeye Shot with [aname]!"
+
+-f "Deadeye Shot | {{c}}"
+
+-f "{{cc}}|{{ch.cc_str(cc) if ch.cc_exists(cc) else "*None*"}}"
+
+adv
