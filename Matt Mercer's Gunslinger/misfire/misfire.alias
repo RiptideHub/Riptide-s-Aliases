@@ -1,0 +1,72 @@
+embed
+<drac2>
+a = argparse(&ARGS&)
+out = []
+gunlist = load_json(get_gvar("6e4ea4df-cc4d-4f02-9b1c-594a1e99f40e"))
+
+gunshown = False
+gunexists = False
+
+mod = wisdomMod if "wis" in a else intelligenceMod if "int" in a else dexterityMod
+prof = proficiencyBonus if "Tinker" in get("pTools", "") else proficiencyBonus*2 if "Tinker" in get("eTools", "") else "0"
+bonus = int(a.last("b")) if a.last("b") else 0
+b1 = f"+{prof}" if int(prof)>0 else ''
+b2 = f"+{bonus}" if a.last("b") else ''
+b3 = f"+{intelligenceMod}" if "flashg" in &ARGS& else ''
+b4 = "+1d4" if "guidance" in &ARGS& else ''
+add = "2d20kh1" if "adv" in a else "2d20kl1" if "dis" in a else "1d20"
+rol = vroll(f"""{add}+{mod}{b1}{b2}{b3}{b4}""")
+
+if (len(&ARGS&) > 1):     
+    guntag = &ARGS&[1]
+    if (a and &ARGS&[0] == "show"): #showing the gun profile
+        for x in gunlist:
+            if (x.tag == guntag):
+                if (x.name == ""):
+                    out.append(f'-title "{x.tag}"')                       
+                else:
+                    out.append(f'-title "{x.name}"')
+                out.append(f'-desc "__Tag__: {x.tag}\n__Misfire__: {x.misfire}\n__Repair Price:__ {x.cost}"')
+                gunshown = True
+        if (not gunshown):
+            out.append(f'-title "There is no gun profile with the tag: {guntag}"')  
+            out.append(f'-f "Showing a gun profile: | `!misfire show [tag]`"')
+            out.append(f'-f "Showing your gun list: | `!gun list`"')
+            out.append(f'-f "Fixing your gun: | `!misfire fix [tag]`"')     
+                
+    
+    guntag = &ARGS&[1]
+    if (a and &ARGS&[0] == "fix"): #fixing the gun
+        for x in gunlist:
+            if (x.tag == guntag):
+                if (x.name == ""):
+                    out.append(f'-title "{name} attempts to fix their {x.tag}!"')
+                    out.append(f'-desc "{10+int(x.misfire)}"')                   
+                else:
+                    out.append(f'-title "{name} attempts to fix their {x.name}!"')
+                    out.append(f'-f "Repair DC|{10+int(x.misfire)}|inline" -f "Roll|{rol}\n{"""**Success!**""" if rol.total>=10+int(x.misfire) else f"**Failure! You will need to pay {x.cost} gp to fix it.**"""} "')   
+                    gunshown = True
+        if (not gunshown):
+            out.append(f'-title "There is no gun profile with the tag: {guntag}"')  
+            out.append(f'-f "Showing a gun profile: | `!misfire show [tag]`"')
+            out.append(f'-f "Showing your gun list: | `!gun list`"')
+            out.append(f'-f "Fixing your gun: | `!misfire fix [tag]`"')  
+
+elif (a and &ARGS&[0] == "list"): #listing out all the guns and their stuff, if no arguments or not enough arguments were given.
+    out.append(f'-title "Your gun list:"')
+    for x in gunlist:
+            if (x.tag != ""):
+                if (x.name == ""):
+                    out.append(f'-f "**{x.tag}** |__Tag__: {x.tag}\n__Misfire__: {x.misfire}\n__Repair Price:__ {x.cost}|inline"')                
+                else:
+                    out.append(f'-f "**{x.name}** | __Tag__: {x.tag}\n__Misfire__: {x.misfire}\n__Repair Price:__ {x.cost}|inline"')
+else:
+    out.append(f'-title "How to use !misfire"')
+    out.append(f'-f "Showing a gun profile: | `!misfire show [tag]`"')
+    out.append(f'-f "Showing your gun list: | `!misfire list`"')  
+    out.append(f'-f "Fixing your gun: | `!misfire fix [tag]`"') 
+ 
+out.append(f'-color {color} -thumb {image}')
+out.append(f'-footer "Made by Riptidecord | !misfire"')
+return " ".join(out)
+</drac2>
