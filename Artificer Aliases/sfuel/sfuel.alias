@@ -12,7 +12,7 @@ character().create_cc_nx(cc, "0", "1", "long", "bubble") if "Spell-Refueling Rin
 
 character().mod_cc(cc, -1) if (character().cc_exists(cc) and character().cc(cc).value) else err(f'The ring is out of uses!{errM}')
 
-character().spellbook.set_slots(a, min(get_slots(a)+1, character().spellbook.get_slots_max(a)))
+character().spellbook.set_slots(a, min(character().spellbook.get_slots(a)+1, character().spellbook.get_max_slots(a)))
 
 </drac2>
 
