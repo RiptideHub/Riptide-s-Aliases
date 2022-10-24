@@ -6,7 +6,7 @@ v = C.cc_exists(cc) and C.get_cc(cc)
 
 C.create_cc_nx(cc, 0, 4, "long", "bubble") if "Mind Sharpener" in get("infusions","") else err(f"You do not have this infusion.{errM}")
 
-C.mod_cc(cc,-1) if v else err(f'You are out of uses!{errM}') if A else err(f'You do not have this Ability!{errM}')}
+C.mod_cc(cc,-1) if v else err(f'You are out of uses!{errM}') if A else err(f'You do not have this Ability!{errM}')
 
 </drac2>
 

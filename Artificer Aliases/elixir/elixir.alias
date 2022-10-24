@@ -28,7 +28,7 @@ T.add_effect(f'{RE}',f'{"-sb 1d4 -b 1d4" if bold else "-ac +1" if res else "-dur
 
 -title "<name> {{"creates their" if "create" in a1 else "pulls out a random" if "roll" in a1 else "uses their" if valid else "tries to use their"}} {{cc}}{{f' on {T.name}' if T else ""}}" {{'' if Artificer>2 and "Alc" in get('subclass','') else err(f'You do not have this ability.{errM}')}} 
 
--desc "{{("The user gains a flying speed of 10 feet for 10 minutes." if flight else "The user can roll a d4 and add the number rolled to every attack roll and saving throw they make for the next minute." if bold else "The user regains a number of hit points equal to 2d4 + your Intelligence modifier." if heal else "The user gains a +1 bonus to AC for 10 minutes." if res else "The user's walking speed increases by 10 feet for 1 hour." if swift else "The user's body is transformed as if by the alter self spell. The user determines the transformation caused by the spell, the effects of which last for 10 minutes." if transform else "CC Created" if "create" in a1 else f"How to use `!elixir`!\n`{H}`\n\n`!elixir create` creates the cc needed for {cc}. Use again when you gain higher levels in this class.") if valid or get_slots(slot) or "create" in a1 else err(f'Out of {cc}s.{errM}\nRun `!elixir create` to create the necessary cc.')}}"
+-desc "{{("The user gains a flying speed of 10 feet for 10 minutes." if flight else "The user can roll a d4 and add the number rolled to every attack roll and saving throw they make for the next minute." if bold else "The user regains a number of hit points equal to 2d4 + your Intelligence modifier." if heal else "The user gains a +1 bonus to AC for 10 minutes." if res else "The user's walking speed increases by 10 feet for 1 hour." if swift else "The user's body is transformed as if by the alter self spell. The user determines the transformation caused by the spell, the effects of which last for 10 minutes." if transform else "CC Created" if "create" in a1 else f"How to use `!elixir`!\n`{H}`\n\n`!elixir create` creates the cc needed for {cc}. Use again when you gain higher levels in this class.") if valid or character().spellbook.get_slots(slot) or "create" in a1 else err(f'Out of {cc}s.{errM}\nRun `!elixir create` to create the necessary cc.')}}"
 
 {{(f' -f "HP Gained (+{hp.total})|{hp}|inline"' if T and heal else f'-f "Healing|{hp}|inline"') if heal else ""}} 
 
@@ -44,7 +44,7 @@ out = []
 sol_1 = ""
 sol_2 = ""
 sol_3 = ""
-set_cvar_nx("elixir", dump_json([sol_1, sol_2, sol_3]))
+character().set_cvar_nx("elixir", dump_json([sol_1, sol_2, sol_3]))
 sollist = load_json(get("elixir","[]"))
 
 if (a1 != "roll"):
